@@ -1,0 +1,15 @@
+﻿@page
+@model IndexModel
+
+<div class="center-page">
+    <form method="POST" style="width: 600px;">
+        <label>
+            When:<br/>
+            <input type="date" style="width: 100%;" asp-for="When" />
+        </label>
+        <label>
+            Background:<br/>
+            <input type="text" asp-for="BackgroundUrl" />
+        </label>
+    </form>
+</div>
