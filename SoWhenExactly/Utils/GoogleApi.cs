@@ -13,19 +13,19 @@ namespace SoWhenExactly.Utils
 {
     public class GoogleApi
     {
-        public static string GetSignInUrl(string antiForgery)
+        public static string GetSignInUrl(string antiForgery, object state)
         {
             var googleSettings = Environment.GetEnvironmentVariable("SOWHEN_GOOGLEAPI");
             var googleSettingsJson = JObject.Parse(googleSettings);
             var googleClientId = (string)googleSettingsJson["web"]["client_id"];
 
+            var stateDictionary = state.ToDictionary();
+            stateDictionary["AntiForgery"] = antiForgery;
+
+            var stateString = stateDictionary.ToJsonEncoded();
+
             using (var provider = new RNGCryptoServiceProvider())
             {
-                // Request forgery token
-//                var bytes = new byte[128];
-//                provider.GetBytes(bytes);
-//                var antiForgery = Convert.ToBase64String(bytes);
-
                 var seedBytes = new byte[32];
                 provider.GetBytes(seedBytes);
                 var seed = BitConverter.ToInt32(seedBytes);
@@ -33,7 +33,7 @@ namespace SoWhenExactly.Utils
                 var nonceParts = Enumerable.Repeat(0, 3).Select(_ => random.Next(100000, 999999).ToString()).ToArray();
                 var nonce = string.Join("-", nonceParts);
 
-                var url = $"https://accounts.google.com/o/oauth2/v2/auth?client_id={googleClientId}&response_type=code&scope=openid%20email%20https://www.googleapis.com/auth/drive.file&redirect_uri=https://localhost:44324/signin-google&state={antiForgery}&openid.realm=localhost&nonce={nonce}";
+                var url = $"https://accounts.google.com/o/oauth2/v2/auth?client_id={googleClientId}&response_type=code&scope=openid%20email%20https://www.googleapis.com/auth/drive.file&redirect_uri=https://localhost:44324/signin-google&state={stateString}&openid.realm=localhost&nonce={nonce}";
                 return url;
             }
         }

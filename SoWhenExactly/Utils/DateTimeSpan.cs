@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace SoWhenExactly.Utils
 {
@@ -21,6 +22,39 @@ namespace SoWhenExactly.Utils
             Minutes = minutes;
             Seconds = seconds;
             Milliseconds = milliseconds;
+        }
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+
+            void AddPart(int amount, string unit)
+            {
+                if (amount <= 0)
+                {
+                    return;
+                }
+
+                if (builder.Length > 0)
+                {
+                    builder.Append(", ");
+                }
+
+                builder.Append(amount);
+                builder.Append(" " + unit);
+                if (amount > 1)
+                {
+                    builder.Append("s");
+                }
+            }
+
+            AddPart(Years, "Year");
+            AddPart(Months, "Month");
+            AddPart(Days, "Day");
+            AddPart(Hours, "Hour");
+            AddPart(Minutes, "Minute");
+
+            return builder.ToString();
         }
     }
 }

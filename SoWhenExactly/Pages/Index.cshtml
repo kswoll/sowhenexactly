@@ -2,14 +2,67 @@
 @model IndexModel
 
 <div class="center-page">
-    <form method="POST" style="width: 600px;">
-        <label>
-            When:<br/>
-            <input type="date" style="width: 100%;" asp-for="When" />
-        </label>
-        <label>
-            Background:<br/>
-            <input type="text" asp-for="BackgroundUrl" />
-        </label>
+    <form method="POST" style="width: 500px;">
+        <div class="form-row">
+            <label>
+                Date:<br/>
+                <input type="date" style="width: 100%;" asp-for="Date" />
+            </label>
+            <label>
+                Time:<br/>
+                <input type="time" style="width: 100%;" asp-for="Time" />
+            </label>
+            <label>
+                Time Zone:<br/>
+                <select asp-items="@Model.TimeZones" asp-for="@Model.TimeZone">
+                </select>
+            </label>
+        </div>
+        @if (@Model.HasBackground)
+        {
+            <div>
+                <label>
+                    Background:<br/>
+                    <input type="text" asp-for="BackgroundUrl" style="width: 100%;"/>
+                </label>
+            </div>
+        }
+
+        <div class="button-bar">
+            <button type="submit">Done</button>
+
+            @if (!Model.HasBackground)
+            {
+                <button type="submit" asp-page-handler="AddBackground">Add Background</button>
+            }
+
+            <button type="submit" asp-page-handler="Preview">Preview</button>
+        </div>
+
+        @*
+        @if (!Model.HasBackground)
+        {
+            <div class="notice">
+                Note, to provide a background image, you will need to authorize Google Drive so we can
+                upload an image to your account.  We will not (and based on the permissions we request --
+                cannot) access any other file in your account except for what we create ourselves.
+            </div>
+        }
+        *@
+
+        <div style="margin-top: 20px;">
+            <img src="/countdownimage?when=@Model.Date.Add(Model.Time)&from=@DateTime.Now&timezone=@Model.TimeZone&backgroundUrl=@Model.BackgroundUrl" width="600" height="300" />
+        </div>
     </form>
 </div>
+
+@if (Model.TimeZone == null)
+{
+    <script>
+        // Initialize the timezone dropdown
+        var tz = jstz.determine();
+        var tzId = tz.name();
+        var timeZoneSelect = document.getElementById("TimeZone");
+        timeZoneSelect.value = tzId;
+    </script>
+}

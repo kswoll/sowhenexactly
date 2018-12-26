@@ -12,25 +12,26 @@ namespace SoWhenExactly.Pages
 {
     public class LoginModel : PageModel
     {
-        public IActionResult OnGet()
+        public IActionResult OnGet(DateTime when, DateTime from, string timezone)
         {
-            // Request forgery token
             using (var provider = new RNGCryptoServiceProvider())
             {
+                // Create a cookie for the request forgery token
                 var bytes = new byte[128];
                 provider.GetBytes(bytes);
                 var antiForgery = Convert.ToBase64String(bytes);
                 HttpContext.Response.Cookies.Append(".Login.Antiforgery", antiForgery, new CookieOptions
                 {
                     HttpOnly = true,
-                    SameSite = SameSiteMode.None
+                    SameSite = SameSiteMode.None,
+                    Path = "/",
+                    Expires = DateTimeOffset.Now.AddHours(1),
+                    IsEssential = true
                 });
 
-                var redirectUrl = GoogleApi.GetSignInUrl(antiForgery);
+                var redirectUrl = GoogleApi.GetSignInUrl(antiForgery, new object());
                 return Redirect(redirectUrl);
             }
-
-            //            var antiForgery = HttpContext.Request.Cookies.First(x => x.Key.StartsWith(".AspNetCore.Antiforgery")).Value;
         }
     }
 }

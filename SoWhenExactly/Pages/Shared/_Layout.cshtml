@@ -1,12 +1,25 @@
-﻿<!DOCTYPE html>
+﻿@using SoWhenExactly.Utils
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SoWhenExactly</title>
 
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/lib/jstz.min.js" asp-append-version="true"></script>
+
+    @if (ViewData.ContainsKey("OpenGraph"))
+    {
+        var og = (OpenGraphInfo)ViewData["OpenGraph"];
+        <meta name="og:title" content="@og.Title" />
+        <meta name="og:description" content="@og.Description" />
+        if (og.Image != null)
+        {
+            <meta name="og:image" content="@og.Image" />
+        }
+    }
 </head>
     <body>
         @RenderBody()

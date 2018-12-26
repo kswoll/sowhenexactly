@@ -1,6 +1,9 @@
 ﻿html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     height: 100vh;
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
 }
 
 label {
@@ -13,4 +16,25 @@ label {
     align-items: center;
     width: 100%;
     height: 100%;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+select {
+    padding: 2px;
+}
+
+.button-bar {
+    margin-top: 20px;
+}
+
+.notice {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 3px;
+    border: 1px black solid;
+    background-color: #F5F5F5
 }

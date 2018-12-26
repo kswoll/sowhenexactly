@@ -1,0 +1,11 @@
+{
+    "version": "1.0",
+    "defaultProvider": "cdnjs",
+    "libraries": [
+        {
+            "library": "jstimezonedetect@1.0.6",
+            "destination": "wwwroot/js/lib",
+            "files": [ "jstz.min.js" ]
+        }
+    ]
+}
