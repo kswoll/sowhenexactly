@@ -15,14 +15,13 @@ namespace SoWhenExactly.Pages
 {
     public class CountdownImageModel : PageModel
     {
-        public async Task<IActionResult> OnGet(DateTime when, DateTime from, string timezoneId, string backgroundUrl = null)
+        public async Task<IActionResult> OnGet(string title, DateTime when, DateTime from, string timezoneId, string backgroundUrl = null)
         {
             var countdown = from.Difference(when);
 
             var stream = new MemoryStream();
             using (var bitmap = new Bitmap(1200, 600, PixelFormat.Format32bppArgb))
             {
-//                bitmap.SetResolution(96 * 2, 96 * 2);
                 using (var graphics = Graphics.FromImage(bitmap))
                 using (var pen = new Pen(Color.Black, 3))
                 using (var fontA = new Font("Arial", 25))
@@ -35,7 +34,7 @@ namespace SoWhenExactly.Pages
                         using (var backgroundStream = await client.GetStreamAsync(backgroundUrl))
                         using (var background = Image.FromStream(backgroundStream))
                         {
-                            graphics.DrawImage(background, new Rectangle(0, 0, 600, 300));
+                            graphics.DrawImage(background, new Rectangle(0, 0, 1200, 600));
                         }
                     }
 
@@ -43,48 +42,64 @@ namespace SoWhenExactly.Pages
                     graphics.InterpolationMode = InterpolationMode.High;
                     graphics.SmoothingMode = SmoothingMode.HighQuality;
                     graphics.CompositingQuality = CompositingQuality.HighQuality;
-                    int yOffset = 0;
+                    int yOffset = 20;
+                    int xOffset = 20;
 
-                    void DrawString(int amount, string unit, Font font)
+                    void DrawStringRaw(string s, int size)
                     {
-                        var emSize = graphics.DpiY * 20 / 72;
+                        var emSize = graphics.DpiY * size / 72;
                         using (var path = new GraphicsPath())
                         {
-                            var s = $"{amount} {unit}";
-                            if (amount > 1)
-                            {
-                                s += "s";
-                            }
-                            path.AddString(s, FontFamily.GenericSansSerif, (int)FontStyle.Regular, emSize, new Point(0, yOffset), new StringFormat());
+                            path.AddString(s, FontFamily.GenericSansSerif, (int)FontStyle.Regular, emSize, new Point(xOffset, yOffset), new StringFormat());
                             graphics.FillPath(Brushes.AliceBlue, path);
                             graphics.DrawPath(pen, path);
                         }
                         yOffset += (int)emSize;
                     }
+                    void DrawString(int amount, string unit)
+                    {
+                        var s = $"{amount} {unit}";
+                        if (amount > 1)
+                        {
+                            s += "s";
+                        }
 
+                        DrawStringRaw(s, 80);
+                    }
+
+                    if (title != null)
+                    {
+                        DrawStringRaw(title, 50);
+                        yOffset += 20;
+                    }
+
+                    int originalYOffset = yOffset;
                     if (countdown.Years > 0)
                     {
-                        DrawString(countdown.Years, "Year", fontA);
+                        DrawString(countdown.Years, "Year");
                     }
 
                     if (countdown.Months > 0)
                     {
-                        DrawString(countdown.Months, "Month", fontB);
+                        DrawString(countdown.Months, "Month");
                     }
 
                     if (countdown.Days > 0)
                     {
-                        DrawString(countdown.Days, "Day", fontB);
+                        DrawString(countdown.Days, "Day");
                     }
+
+                    xOffset = 600;
+                    yOffset = originalYOffset;
 
                     if (countdown.Hours > 0)
                     {
-                        DrawString(countdown.Hours, "Hour", fontB);
+                        DrawString(countdown.Hours, "Hour");
                     }
 
                     if (countdown.Minutes > 0)
                     {
-                        DrawString(countdown.Hours, "Minute", fontB);
+                        DrawString(countdown.Minutes, "Minute");
                     }
 
                     bitmap.Save(stream, ImageFormat.Png);

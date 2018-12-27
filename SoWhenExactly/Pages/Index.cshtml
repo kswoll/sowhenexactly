@@ -2,7 +2,11 @@
 @model IndexModel
 
 <div class="center-page">
-    <form method="POST" style="width: 500px;">
+    <form method="POST" style="width: 600px;">
+        <label>
+            Title:<br/>
+            <input type="text" style="width: 100%" asp-for="Title" />
+        </label>
         <div class="form-row">
             <label>
                 Date:<br/>
@@ -51,7 +55,7 @@
         *@
 
         <div style="margin-top: 20px;">
-            <img src="/countdownimage?when=@Model.Date.Add(Model.Time)&from=@DateTime.Now&timezone=@Model.TimeZone&backgroundUrl=@Model.BackgroundUrl" width="600" height="300" />
+            <img src="/countdownimage?title=@Model.Title&when=@Model.Date.Add(Model.Time)&from=@DateTime.Now&timezone=@Model.TimeZone&backgroundUrl=@Model.BackgroundUrl" width="600" height="300" />
         </div>
     </form>
 </div>

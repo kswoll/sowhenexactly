@@ -22,6 +22,7 @@ namespace SoWhenExactly.Pages
 {
     public class IndexModel : PageModel
     {
+        public string Title { get; set; }
         public DateTime Date { get; set; } = DateTime.Now.AddDays(1);
         public TimeSpan Time { get; set; } = TimeSpan.Zero;
         public string BackgroundUrl { get; set; }
@@ -29,7 +30,7 @@ namespace SoWhenExactly.Pages
         public SelectListItem[] TimeZones { get; set; }
         public bool HasBackground { get; set; }
 
-        public async Task OnGetAsync(DateTime? when, string timezone, bool hasBackground = false, string backgroundUrl = null)
+        public async Task OnGetAsync(string title, DateTime? when, string timezone, bool hasBackground = false, string backgroundUrl = null)
         {
             if (when != null)
             {
@@ -37,6 +38,7 @@ namespace SoWhenExactly.Pages
                 Time = when.Value.TimeOfDay;
             }
 
+            Title = title;
             TimeZone = timezone;
             HasBackground = hasBackground;
             BackgroundUrl = backgroundUrl;
@@ -108,16 +110,16 @@ namespace SoWhenExactly.Pages
         }
 
 
-        public IActionResult OnPost(DateTime date, TimeSpan time, string timezone, string backgroundUrl)
+        public IActionResult OnPost(string title, DateTime date, TimeSpan time, string timezone, string backgroundUrl)
         {
             var when = date.Add(time);
-            return RedirectToPage("Countdown", new { when, from = DateTime.Now, timezone, backgroundUrl });
+            return RedirectToPage("Countdown", new { title, when, from = DateTime.Now, timezone, backgroundUrl });
         }
 
-        public IActionResult OnPostAddBackground(DateTime date, TimeSpan time, string timezone)
+        public IActionResult OnPostAddBackground(string title, DateTime date, TimeSpan time, string timezone)
         {
             var when = date.Add(time);
-            return RedirectToPage("Index", new { when, from = DateTime.Now, timezone, hasBackground = true });
+            return RedirectToPage("Index", new { title, when, from = DateTime.Now, timezone, hasBackground = true });
 
 /*
 Log in to google
@@ -147,9 +149,9 @@ Log in to google
         }
 
 */
-        public IActionResult OnPostPreview(DateTime date, TimeSpan time, string timezone, string backgroundUrl)
+        public IActionResult OnPostPreview(string title, DateTime date, TimeSpan time, string timezone, string backgroundUrl)
         {
-            return RedirectToPage("Index", new { when = date.Add(time), timezone, backgroundUrl, hasBackground = backgroundUrl != null });
+            return RedirectToPage("Index", new { title, when = date.Add(time), timezone, backgroundUrl, hasBackground = backgroundUrl != null });
         }
     }
 }

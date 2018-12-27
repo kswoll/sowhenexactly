@@ -12,14 +12,16 @@ namespace SoWhenExactly.Pages
 {
     public class CountdownModel : PageModel
     {
+        public string Title { get; set; }
         public DateTime When { get; set; }
         public DateTime From { get; set; }
         public DateTimeSpan Countdown { get; set; }
         public string TimeZone { get; set; }
         public string BackgroundUrl { get; set; }
 
-        public void OnGet(DateTime when, DateTime from, string timezone, string backgroundUrl = null)
+        public void OnGet(string title, DateTime when, DateTime from, string timezone, string backgroundUrl = null)
         {
+            Title = title;
             When = when;
             From = from;
             BackgroundUrl = backgroundUrl;

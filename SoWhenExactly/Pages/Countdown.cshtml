@@ -1,17 +1,19 @@
 ﻿@page "/countdown"
+@using System.Net
 @using SoWhenExactly.Utils
 @model SoWhenExactly.Pages.CountdownModel
 @{
-    ViewData["Title"] = "Countdown";
+    ViewData["Title"] = @Model.Title;
     ViewData["OpenGraph"] = new OpenGraphInfo
     {
+        Title = Model.Title,
         Description = Model.Countdown.ToString().ToHtmlContent(),
-        Image = $"https://sowhenexactly.com/countdownimage?when={Model.When}&from={Model.From}&timezone={Model.TimeZone}&backgroundUrl={Model.BackgroundUrl}".ToHtmlContent()
+        Image = $"https://sowhenexactly.com/countdownimage?title={Model.Title.UrlEncode()}&when={Model.When.UrlEncode()}&from={Model.From.UrlEncode()}&timezone={Model.TimeZone.UrlEncode()}&backgroundUrl={Model.BackgroundUrl.UrlEncode()}".ToHtmlContent()
     };
 }
 
 <div class="center-page">
     <div>
-        <img src="/countdownimage?when=@Model.When&from=@Model.From&timezone=@Model.TimeZone&backgroundUrl=@Model.BackgroundUrl" width="600" height="300" />
+        <img src="/countdownimage?title=@Model.Title&when=@Model.When&from=@Model.From&timezone=@Model.TimeZone&backgroundUrl=@Model.BackgroundUrl" width="600" height="300" />
     </div>
 </div>
